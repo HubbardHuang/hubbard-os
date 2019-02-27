@@ -1,30 +1,44 @@
 #include "array.h"
 #include "console.h"
-#include "console_test.h"
 #include "gdt.h"
 #include "interrupt.h"
 #include "multiboot.h"
 #include "physical_memory.h"
 #include "timer.h"
 #include "type.h"
+#include "virtual_memory.h"
 
 using namespace hubbardos::interface;
 
 namespace hubbardos {
 namespace kernel {
 
-extern "C" int
+char kernel_stack[8192];
+int HubbardOsKernel(void);
+
+extern "C" {
+__attribute__((section(".init.text"))) void
+PrepareForHubbardOsKernel(void) {
+    VirtualMemory::InitializeFirstStep();
+    uint32_t kernel_stack_top = ((uint32_t)kernel_stack + 8192) & 0xFFFFFFF0;
+    asm volatile("mov %0, %%esp\n\t"
+                 "xor %%ebp, %%ebp"
+                 :
+                 : "r"(kernel_stack_top));
+    HubbardOsKernel();
+}
+}
+
+int
 HubbardOsKernel(void) {
     ProtectedMode::Initialize();
-    Interrupt::Initialize();
     Console::Instance().Clear();
-    Console::Instance().DrawTitle("Welcome to HubbardOS Kernel!");
-    // Timer::Instance().StartWorking();
-    Interrupt::Close();
-
-    asm volatile("int $3");
+    Interrupt::Initialize();
     PhysialMemory::Initialize();
     PhysialMemory::ShowMap();
+    VirtualMemory::InitializeSecondStep(); // 顺序不能更改
+
+    Console::Instance().DrawTitle("Welcome to HubbardOS Kernel!");
 
     Console::SubInstance().PrintFormatted("page number: %u.\n",
                                           PhysialMemory::GetPageTotal());
@@ -34,7 +48,12 @@ HubbardOsKernel(void) {
     Console::SubInstance().PrintFormatted("page = 0x%x\n", page);
     page = PhysialMemory::AllocatePage();
     Console::SubInstance().PrintFormatted("page = 0x%x\n", page);
+    Timer::Instance().StartWorking();
+    Interrupt::Close();
 
+    while (1) {
+        asm volatile("hlt");
+    }
     return 0;
 }
 

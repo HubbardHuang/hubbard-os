@@ -9,36 +9,6 @@ extern uint8_t start_address[];
 extern uint8_t end_address[];
 }
 
-/*
-PhysicalMemory::PhysicalMemory()
-  : start_address_((uint32_t)start_address)
-  , end_address_((uint32_t)end_address) {
-    page_total_ = (end_address_ - start_address_) / kPageSize;
-}
-
-PhysicalMemory&
-PhysicalMemory::Instance(void) {
-    static PhysicalMemory singleton;
-    return singleton;
-}
-
-void
-PhysicalMemory::ShowMap(void) {
-    uint32_t map_entry = multiboot->mmap_addr;
-    uint32_t map_length = multiboot->mmap_length;
-
-    for (mmap_entry_t* mmap = (mmap_entry_t*)map_entry;
-         (uint32_t)mmap < map_entry + map_length; mmap++) {
-        Console::SubInstance().PrintFormatted(
-          "base address: 0x%x%x, length = 0x%x%x, type = %d.\n", mmap->base_addr_high,
-          mmap->base_addr_low, mmap->length_high, mmap->length_low, mmap->type);
-    }
-
-    Console::SubInstance().PrintFormatted(
-      "start: %u, end: %u, page total: %u(remainder = %d)\n", start_address_,
-      end_address_, page_total_, (end_address_ - start_address_) % kPageSize);
-}
-*/
 uint32_t PhysialMemory::kernel_start_address_;
 uint32_t PhysialMemory::kernel_end_address_;
 uint32_t PhysialMemory::page_stack_[PhysialMemory::kPageMaxNumber_] = { 2 };
@@ -100,7 +70,7 @@ PhysialMemory::ShowMap(void) {
     }
 
     Console::SubInstance().PrintFormatted(
-      "start: %u, end: %u, page total: %u(remainder = %d)\n", kernel_start_address_,
+      "start: %x, end: %x, page total: %u(remainder = %d)\n", kernel_start_address_,
       kernel_end_address_, page_total_,
       (kernel_end_address_ - kernel_start_address_) % kPageSize_);
 }
