@@ -1,6 +1,7 @@
 #include "array.h"
 #include "console.h"
 #include "gdt.h"
+#include "heap_region.h"
 #include "interrupt.h"
 #include "multiboot.h"
 #include "physical_memory.h"
@@ -31,6 +32,23 @@ PrepareForHubbardOsKernel(void) {
 }
 }
 
+void
+TestHeap() {
+    void* a1 = HeapRegion::Allocate(50);
+    Console::SubInstance().PrintFormatted("malloc 50: 0x%x\n", a1);
+    void* a2 = HeapRegion::Allocate(500);
+    Console::SubInstance().PrintFormatted("malloc 500: 0x%x\n", a2);
+    void* a3 = HeapRegion::Allocate(5000);
+    Console::SubInstance().PrintFormatted("malloc 5000: 0x%x\n", a3);
+
+    Console::SubInstance().PrintFormatted("free 50: 0x%x\n", a1);
+    HeapRegion::Free(a1);
+    Console::SubInstance().PrintFormatted("free 500: 0x%x\n", a2);
+    HeapRegion::Free(a2);
+    Console::SubInstance().PrintFormatted("free 5000: 0x%x\n", a3);
+    HeapRegion::Free(a3);
+}
+
 int
 HubbardOsKernel(void) {
     ProtectedMode::Initialize();
@@ -41,19 +59,21 @@ HubbardOsKernel(void) {
     VirtualMemory::InitializeSecondStep(); // 顺序不能更改
 
     Console::Instance().DrawTitle("Welcome to HubbardOS Kernel!");
-
     Console::SubInstance().PrintFormatted("page number: %u.\n",
                                           PhysialMemory::GetPageTotal());
+
     uint32_t page = PhysialMemory::AllocatePage();
     Console::SubInstance().PrintFormatted("page = 0x%x\n", page);
     page = PhysialMemory::AllocatePage();
     Console::SubInstance().PrintFormatted("page = 0x%x\n", page);
     page = PhysialMemory::AllocatePage();
     Console::SubInstance().PrintFormatted("page = 0x%x\n", page);
+
     Timer::Instance().StartWorking();
     Interrupt::Close();
-    uint32_t p = reinterpret_cast<uint32_t>(VirtualMemory::GetMapping(&p));
-    Console::SubInstance().PrintFormatted("&p = 0x%x.\n", p);
+
+    HeapRegion::Initialize();
+    TestHeap();
 
     while (1) {
         asm volatile("hlt");

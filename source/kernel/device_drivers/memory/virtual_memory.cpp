@@ -23,7 +23,7 @@ VirtualMemory::pte_t* const VirtualMemory::page_table_temp_high_ =
 __attribute__((aligned(4096))) VirtualMemory::pgd_t
   VirtualMemory::kernel_page_directory_[VirtualMemory::kPageDirectorySize_];
 __attribute__((aligned(4096)))
-VirtualMemory::pte_t VirtualMemory::kernel_page_table_[VirtualMemory::kPageDirectorySize_]
+VirtualMemory::pte_t VirtualMemory::kernel_page_table_[VirtualMemory::kPageTableNumber_]
                                                       [VirtualMemory::kPageTableSize_];
 
 static inline void
@@ -32,8 +32,8 @@ SwitchPageDirectory(uint32_t page_directory_address) {
 }
 
 static inline void
-UpdateTlb(void* virtual_address) {
-    asm volatile("invlpg (%0)" : : "a"(reinterpret_cast<uint32_t>(virtual_address)));
+UpdateTlb(uint32_t virtual_address) {
+    asm volatile("invlpg (%0)" : : "a"(virtual_address));
 }
 
 void
@@ -71,29 +71,27 @@ VirtualMemory::InitializeFirstStep(void) {
 void
 VirtualMemory::InitializeSecondStep(void) {
     size_t pgd_1st_index = GetPageDirectoryIndex(kOffset_);
-    for (size_t i = pgd_1st_index; i < kPageTableSize_ + pgd_1st_index; i++) {
+    for (size_t i = pgd_1st_index; i < kPageTableNumber_ + pgd_1st_index; i++) {
         kernel_page_directory_[i] = static_cast<pgd_t>(
           (reinterpret_cast<uint32_t>(kernel_page_table_[i - pgd_1st_index]) - kOffset_) |
           kPagePresent_ | kPageWrite_);
     }
     uint32_t* pte = reinterpret_cast<uint32_t*>(kernel_page_table_);
-    for (size_t i = 1; i < kPageTableSize_ * kPageDirectorySize_; i++) {
+    for (size_t i = 1; i < kPageTableNumber_ * kPageTableSize_; i++) {
         pte[i] = (i << 12) | kPagePresent_ | kPageWrite_;
     }
 
-    Interrupt::RegisterHandler(14, &PageFault);
+    // Interrupt::RegisterHandler(14, &PageFault);
     uint32_t kpd_physical_address =
       reinterpret_cast<uint32_t>(kernel_page_directory_) - kOffset_;
     SwitchPageDirectory(kpd_physical_address);
 }
 
 void
-VirtualMemory::MapTo(void* virtual_address, void* physical_address,
+VirtualMemory::MapTo(uint32_t virtual_address, uint32_t physical_address,
                      uint32_t page_table_item_flag) {
-    uint32_t page_directory_index =
-      GetPageDirectoryIndex(reinterpret_cast<uint32_t>(virtual_address));
-    uint32_t page_table_index =
-      GetPageTableIndex(reinterpret_cast<uint32_t>(virtual_address));
+    uint32_t page_directory_index = GetPageDirectoryIndex(virtual_address);
+    uint32_t page_table_index = GetPageTableIndex(virtual_address);
 
     pte_t* current_page_table =
       reinterpret_cast<pte_t*>(kernel_page_directory_[page_directory_index] & kPageMask_);
@@ -118,7 +116,7 @@ VirtualMemory::MapTo(void* virtual_address, void* physical_address,
 }
 
 void
-VirtualMemory::Unmap(void* virtual_address) {
+VirtualMemory::Unmap(uint32_t virtual_address) {
     uint32_t page_directory_index =
       GetPageDirectoryIndex(reinterpret_cast<uint32_t>(virtual_address));
     uint32_t page_table_index =
@@ -135,8 +133,8 @@ VirtualMemory::Unmap(void* virtual_address) {
     UpdateTlb(virtual_address);
 }
 
-void*
-VirtualMemory::GetMapping(void* virtual_address) {
+uint32_t
+VirtualMemory::GetMapping(uint32_t virtual_address) {
     uint32_t page_directory_index =
       GetPageDirectoryIndex(reinterpret_cast<uint32_t>(virtual_address));
     uint32_t page_table_index =
@@ -150,7 +148,7 @@ VirtualMemory::GetMapping(void* virtual_address) {
     if (!current_page_table[page_table_index]) {
         return 0;
     }
-    return reinterpret_cast<void*>(current_page_table[page_table_index]);
+    return reinterpret_cast<uint32_t>(current_page_table[page_table_index]);
 }
 
 } // namespace kernel
