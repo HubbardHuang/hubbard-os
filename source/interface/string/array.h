@@ -17,10 +17,7 @@ char* ToString(const int32_t source, NumberSystem number_system);
 void SetMember(void* target, const size_t length, const char value);
 size_t GetLength(const char* target);
 char* CopyString(char* destination, const char* source);
-void CopyString(char* destination, const char* source, size_t start,
-                size_t end);
-uint32_t ToNumber(const char* source);   // Undo
-uint32_t FindNumber(const char* source); // Undo
+void CopyString(char* destination, const char* source, size_t start, size_t end);
 int FindCharacter(const char* source, const char target);
 int Compare(const char* string_a, const char* string_b);
 

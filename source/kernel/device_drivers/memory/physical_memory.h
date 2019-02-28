@@ -7,30 +7,10 @@
 namespace hubbardos {
 namespace kernel {
 
-/*
-class PhysicalMemory {
-private:
-    uint32_t start_address_;
-    uint32_t end_address_;
-    uint32_t page_total_;
-    PhysicalMemory();
-    PhysicalMemory(const PhysicalMemory&);
-    PhysicalMemory& operator=(const PhysicalMemory&);
-
-public:
-    static const uint32_t kPageSize = 1024;
-    static PhysicalMemory& Instance(void);
-    void GetStartAddress(void) const;
-    void GetEndAddress(void) const;
-    void GetPageTotao(void) const;
-    void ShowMap(void);
-};
-*/
-
 class PhysialMemory {
 public:
     static const size_t kPageSize_ = 4096;
-    static const size_t kThreadStackSize_ = 4 * kPageSize_;
+    static const size_t kThreadStackSize_ = 2 * kPageSize_;
     static const size_t kMaxSize_ = 1 << 28 /*0x20000000*/; // 512MB
     static const size_t kPageMaxNumber_ = kMaxSize_ / kPageSize_;
     static const size_t kPageMask_ = 0xFFFFF000; // 4096

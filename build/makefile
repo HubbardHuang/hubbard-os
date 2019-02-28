@@ -13,7 +13,7 @@ ADDITIONAL_INCLUDE =								\
 	-I ../source/kernel/device_drivers/timer		\
 	-I ../source/kernel/device_drivers				\
 	-I ../test/console_test
-CC = g++
+CC = gcc
 LD = ld
 ASM = nasm
 

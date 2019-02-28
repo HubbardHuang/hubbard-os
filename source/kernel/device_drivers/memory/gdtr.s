@@ -20,12 +20,6 @@ LoadGdtr:
     ;load kernel code segment selector
     jmp 0x08:.flush
 .flush:
-
-    mov eax, cr0
-    and eax, 0x7fffffff
-    or  eax, 0x00000001
-    mov cr0, eax
-    
     ret
 
 ; _ZN9hubbardos6kernel4GDTR5FlushEPN9hubbardos6kernel4GDTRE

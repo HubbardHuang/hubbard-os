@@ -31,7 +31,6 @@ ToStringFromBinary(const uint32_t source, char* buffer) {
 
 static void
 ToStringFromDecimal(const uint32_t source, char* buffer) {
-
     if (!source) {
         buffer[0] = '0';
         buffer[1] = '\0';
@@ -67,7 +66,7 @@ ToStringFromDecimal(const int32_t source, char* buffer) {
         return;
     }
 
-    uint32_t temp = (uint32_t)source;
+    uint32_t temp = static_cast<uint32_t>(source);
 
     if ((temp >> 31) & 1) {
         buffer[0] = '-';
@@ -103,9 +102,6 @@ ToStringFromHexadecimal(const uint32_t source, char* buffer) {
 
 char*
 ToString(const uint32_t source, NumberSystem number_system) {
-
-    // SetMember(buffer, kBufferSize, '\0');
-
     switch (number_system) {
         case NumberSystem::kBinary:
             ToStringFromBinary(source, buffer);
@@ -124,14 +120,12 @@ ToString(const uint32_t source, NumberSystem number_system) {
 
 char*
 ToString(const int32_t source, NumberSystem number_system) {
-    // SetMember(buffer, kBufferSize, '\0');
-
     switch (number_system) {
         case NumberSystem::kBinary:
             ToStringFromBinary(source, buffer);
             break;
         case NumberSystem::kDecimal:
-            ToStringFromDecimal((int32_t)source, buffer);
+            ToStringFromDecimal(source, buffer);
             break;
         case NumberSystem::kHexadecimal:
             ToStringFromHexadecimal(source, buffer);
@@ -166,69 +160,11 @@ CopyString(char* destination, const char* source) {
     }
 
     size_t i;
-    // for (i = 0; source[i] != '\0' && destination[i] != '\0'; i++) {
     for (i = 0; source[i] != '\0'; i++) {
         destination[i] = source[i];
     }
     return destination + i;
 }
-/*
-void
-CopyString(char* destination, const char* source, size_t start, size_t end) {
-    if ((!source) || (!destination)) {
-        return;
-    }
-    for (size_t i = start;
-         i <= end && source[i] != '\0' && destination[i] != '\0'; i++) {
-        destination[i] = source[i];
-    }
-}
-*/
-// Undo
-/*
-uint32_t
-ToNumber(const char* source) {
-    uint32_t number = 0;
-
-    return number;
-}
-*/
-
-// Undo
-/*
-uint32_t
-FindNumber(const char* source) {
-    char buffer[32] = { 0 };
-    char buffer_length = 0;
-    int point_position = FindCharacter(source, '.');
-    int point_count = 0;
-
-    int i = 0;
-    while (!IsDigit(source[i++])) {
-        ;
-    }
-    buffer_length = i;
-    i--;
-
-    size_t digit_count = 0;
-    while (IsDigit(source[i]) || source[i] == '.') {
-        if (source[i] == '.') {
-            point_count++;
-            if (point_count == 1) {
-                point_position = i;
-            }
-        }
-
-        if (point_count == 1 || point_count == 0) {
-            buffer[digit_count] = source[i];
-        } else {
-            break;
-        }
-
-        i++;
-    }
-    buffer_length -= i;
-}*/
 
 int
 FindCharacter(const char* source, const char target) {

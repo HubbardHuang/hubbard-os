@@ -34,8 +34,8 @@ Timer::Timer(uint32_t requests_per_second)
 
     IoPort::Instance().WriteByte(0x43, 0x36);
     uint32_t divisor = 1193180 / requests_per_second_;
-    uint8_t low_byte = (uint8_t)(divisor & 0xFF);
-    uint8_t high_byte = (uint8_t)((divisor >> 8) & 0xFF);
+    uint8_t low_byte = static_cast<uint8_t>(divisor & 0xFF);
+    uint8_t high_byte = static_cast<uint8_t>((divisor >> 8) & 0xFF);
     IoPort::Instance().WriteByte(0x40, low_byte);
     IoPort::Instance().WriteByte(0x40, high_byte);
 }

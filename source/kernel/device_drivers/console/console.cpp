@@ -3,6 +3,7 @@
 #include "formatted.h"
 #include "io_port.h"
 #include "vargs.h"
+#include "virtual_memory.h"
 
 using namespace hubbardos::interface;
 
@@ -12,7 +13,8 @@ namespace kernel {
 bool Console::title_drawn = false;
 
 static const uint8_t kDefaultTableLength = 4;
-static uint16_t* const kVramMappingMemory = (uint16_t*)0xB8000;
+static uint16_t* const kVramMappingMemory =
+  reinterpret_cast<uint16_t*>(0xB8000 + VirtualMemory::kOffset_);
 static const size_t kBufferLength = 1024;
 
 static inline uint16_t
@@ -214,46 +216,6 @@ Console::PrintFormatted(const BackgroudColor& backgroud_color,
     va_end(arg_list);
     PrintString(buffer, backgroud_color, foregroud_color);
     return message_length;
-    /*static char parsed[kParsedLength];
-    size_t parsed_count = 0;
-    char* buffer_iterator = buffer;
-    FormatedResult formated_result;
-
-    va_list arg_list;
-    va_start(arg_list, message);
-
-    bool formated = false;
-    size_t length = GetLength(message);
-    length = length < kBufferLength ? length : kBufferLength;
-
-    for (size_t i = 0; i < length; i++) {
-        switch (message[i]) {
-            case '%':
-                formated = true;
-                parsed_count = 0;
-                while (formated == true && parsed_count < kParsedLength) {
-                    i++;
-                    parsed[parsed_count] = message[i];
-                    for (size_t k = 0; formated_type_flag[k] != '\0'; k++) {
-                        if (parsed[parsed_count] == formated_type_flag[k]) {
-                            formated = false;
-                            break;
-                        }
-                    }
-                    parsed_count++;
-                }
-                ParseFormatedCommand(arg_list, parsed, parsed_count, formated_result);
-                CatchArgument(arg_list, formated_result, buffer_iterator);
-                SetMember(parsed, parsed_count, '\0');
-                break;
-            default:
-                *buffer_iterator++ = message[i];
-                break;
-        }
-    }
-    va_end(arg_list);
-    SetMember(buffer, kBufferLength, '\0');
-    */
 }
 
 size_t
@@ -265,50 +227,6 @@ Console::PrintFormatted(const char* message, ...) {
     va_end(arg_list);
     PrintString(buffer, BackgroudColor::Default(), ForegroudColor::Default());
     return message_length;
-
-    /*
-    static char buffer[kBufferLength];
-    static char parsed[kParsedLength];
-    size_t parsed_count = 0;
-    char* buffer_iterator = buffer;
-    FormatedResult formated_result;
-
-    va_list arg_list;
-    va_start(arg_list, message);
-    bool formated = false;
-    size_t length = GetLength(message);
-    length = length < kBufferLength ? length : kBufferLength;
-
-    for (size_t i = 0; i < length; i++) {
-        switch (message[i]) {
-            case '%':
-                formated = true;
-                parsed_count = 0;
-                while (formated == true && parsed_count < kParsedLength) {
-                    i++;
-                    parsed[parsed_count] = message[i];
-                    for (size_t k = 0; formated_type_flag[k] != '\0'; k++) {
-                        if (parsed[parsed_count] == formated_type_flag[k]) {
-                            formated = false;
-                            break;
-                        }
-                    }
-                    parsed_count++;
-                }
-                ParseFormatedCommand(arg_list, parsed, parsed_count, formated_result);
-                CatchArgument(arg_list, formated_result, buffer_iterator);
-                SetMember(parsed, parsed_count, '\0');
-                break;
-            default:
-                *buffer_iterator++ = message[i];
-                break;
-        }
-    }
-    PrintString(buffer, BackgroudColor::Default(), ForegroudColor::Default());
-    va_end(arg_list);
-    SetMember(buffer, kBufferLength, '\0');
-    return (buffer_iterator - buffer);
-    */
 }
 
 void

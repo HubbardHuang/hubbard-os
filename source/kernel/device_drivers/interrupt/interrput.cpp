@@ -124,57 +124,57 @@ Interrupt::Initialize(void) {
 
     SetMember(handler_, sizeof(InterruptHandler) * kInterruptVectorTotal, 0);
     idtr_.limit = sizeof(IdtGate) * kInterruptVectorTotal - 1;
-    idtr_.base = (uint32_t)&gate_;
+    idtr_.base = reinterpret_cast<uint32_t>(&gate_);
 
-    SetGate(0, (uint32_t)Exception0, 0x08, 0x8E);
-    SetGate(1, (uint32_t)Exception1, 0x08, 0x8E);
-    SetGate(2, (uint32_t)Exception2, 0x08, 0x8E);
-    SetGate(3, (uint32_t)Exception3, 0x08, 0x8E);
-    SetGate(4, (uint32_t)Exception4, 0x08, 0x8E);
-    SetGate(5, (uint32_t)Exception5, 0x08, 0x8E);
-    SetGate(6, (uint32_t)Exception6, 0x08, 0x8E);
-    SetGate(7, (uint32_t)Exception7, 0x08, 0x8E);
-    SetGate(8, (uint32_t)Exception8, 0x08, 0x8E);
-    SetGate(9, (uint32_t)Exception9, 0x08, 0x8E);
-    SetGate(10, (uint32_t)Exception10, 0x08, 0x8E);
-    SetGate(11, (uint32_t)Exception11, 0x08, 0x8E);
-    SetGate(12, (uint32_t)Exception12, 0x08, 0x8E);
-    SetGate(13, (uint32_t)Exception13, 0x08, 0x8E);
-    SetGate(14, (uint32_t)Exception14, 0x08, 0x8E);
-    SetGate(15, (uint32_t)Exception15, 0x08, 0x8E);
-    SetGate(16, (uint32_t)Exception16, 0x08, 0x8E);
-    SetGate(17, (uint32_t)Exception17, 0x08, 0x8E);
-    SetGate(18, (uint32_t)Exception18, 0x08, 0x8E);
-    SetGate(19, (uint32_t)Exception19, 0x08, 0x8E);
-    SetGate(20, (uint32_t)Exception20, 0x08, 0x8E);
-    SetGate(21, (uint32_t)Exception21, 0x08, 0x8E);
-    SetGate(22, (uint32_t)Exception22, 0x08, 0x8E);
-    SetGate(23, (uint32_t)Exception23, 0x08, 0x8E);
-    SetGate(24, (uint32_t)Exception24, 0x08, 0x8E);
-    SetGate(25, (uint32_t)Exception25, 0x08, 0x8E);
-    SetGate(26, (uint32_t)Exception26, 0x08, 0x8E);
-    SetGate(27, (uint32_t)Exception27, 0x08, 0x8E);
-    SetGate(28, (uint32_t)Exception28, 0x08, 0x8E);
-    SetGate(29, (uint32_t)Exception29, 0x08, 0x8E);
-    SetGate(30, (uint32_t)Exception30, 0x08, 0x8E);
-    SetGate(31, (uint32_t)Exception31, 0x08, 0x8E);
+    SetGate(0, reinterpret_cast<uint32_t>(Exception0), 0x08, 0x8E);
+    SetGate(1, reinterpret_cast<uint32_t>(Exception1), 0x08, 0x8E);
+    SetGate(2, reinterpret_cast<uint32_t>(Exception2), 0x08, 0x8E);
+    SetGate(3, reinterpret_cast<uint32_t>(Exception3), 0x08, 0x8E);
+    SetGate(4, reinterpret_cast<uint32_t>(Exception4), 0x08, 0x8E);
+    SetGate(5, reinterpret_cast<uint32_t>(Exception5), 0x08, 0x8E);
+    SetGate(6, reinterpret_cast<uint32_t>(Exception6), 0x08, 0x8E);
+    SetGate(7, reinterpret_cast<uint32_t>(Exception7), 0x08, 0x8E);
+    SetGate(8, reinterpret_cast<uint32_t>(Exception8), 0x08, 0x8E);
+    SetGate(9, reinterpret_cast<uint32_t>(Exception9), 0x08, 0x8E);
+    SetGate(10, reinterpret_cast<uint32_t>(Exception10), 0x08, 0x8E);
+    SetGate(11, reinterpret_cast<uint32_t>(Exception11), 0x08, 0x8E);
+    SetGate(12, reinterpret_cast<uint32_t>(Exception12), 0x08, 0x8E);
+    SetGate(13, reinterpret_cast<uint32_t>(Exception13), 0x08, 0x8E);
+    SetGate(14, reinterpret_cast<uint32_t>(Exception14), 0x08, 0x8E);
+    SetGate(15, reinterpret_cast<uint32_t>(Exception15), 0x08, 0x8E);
+    SetGate(16, reinterpret_cast<uint32_t>(Exception16), 0x08, 0x8E);
+    SetGate(17, reinterpret_cast<uint32_t>(Exception17), 0x08, 0x8E);
+    SetGate(18, reinterpret_cast<uint32_t>(Exception18), 0x08, 0x8E);
+    SetGate(19, reinterpret_cast<uint32_t>(Exception19), 0x08, 0x8E);
+    SetGate(20, reinterpret_cast<uint32_t>(Exception20), 0x08, 0x8E);
+    SetGate(21, reinterpret_cast<uint32_t>(Exception21), 0x08, 0x8E);
+    SetGate(22, reinterpret_cast<uint32_t>(Exception22), 0x08, 0x8E);
+    SetGate(23, reinterpret_cast<uint32_t>(Exception23), 0x08, 0x8E);
+    SetGate(24, reinterpret_cast<uint32_t>(Exception24), 0x08, 0x8E);
+    SetGate(25, reinterpret_cast<uint32_t>(Exception25), 0x08, 0x8E);
+    SetGate(26, reinterpret_cast<uint32_t>(Exception26), 0x08, 0x8E);
+    SetGate(27, reinterpret_cast<uint32_t>(Exception27), 0x08, 0x8E);
+    SetGate(28, reinterpret_cast<uint32_t>(Exception28), 0x08, 0x8E);
+    SetGate(29, reinterpret_cast<uint32_t>(Exception29), 0x08, 0x8E);
+    SetGate(30, reinterpret_cast<uint32_t>(Exception30), 0x08, 0x8E);
+    SetGate(31, reinterpret_cast<uint32_t>(Exception31), 0x08, 0x8E);
 
-    SetGate(32, (uint32_t)Request0, 0x08, 0x8E);
-    SetGate(33, (uint32_t)Request1, 0x08, 0x8E);
-    SetGate(34, (uint32_t)Request2, 0x08, 0x8E);
-    SetGate(35, (uint32_t)Request3, 0x08, 0x8E);
-    SetGate(36, (uint32_t)Request4, 0x08, 0x8E);
-    SetGate(37, (uint32_t)Request5, 0x08, 0x8E);
-    SetGate(38, (uint32_t)Request6, 0x08, 0x8E);
-    SetGate(39, (uint32_t)Request7, 0x08, 0x8E);
-    SetGate(40, (uint32_t)Request8, 0x08, 0x8E);
-    SetGate(41, (uint32_t)Request9, 0x08, 0x8E);
-    SetGate(42, (uint32_t)Request10, 0x08, 0x8E);
-    SetGate(43, (uint32_t)Request11, 0x08, 0x8E);
-    SetGate(44, (uint32_t)Request12, 0x08, 0x8E);
-    SetGate(45, (uint32_t)Request13, 0x08, 0x8E);
-    SetGate(46, (uint32_t)Request14, 0x08, 0x8E);
-    SetGate(47, (uint32_t)Request15, 0x08, 0x8E);
+    SetGate(32, reinterpret_cast<uint32_t>(Request0), 0x08, 0x8E);
+    SetGate(33, reinterpret_cast<uint32_t>(Request1), 0x08, 0x8E);
+    SetGate(34, reinterpret_cast<uint32_t>(Request2), 0x08, 0x8E);
+    SetGate(35, reinterpret_cast<uint32_t>(Request3), 0x08, 0x8E);
+    SetGate(36, reinterpret_cast<uint32_t>(Request4), 0x08, 0x8E);
+    SetGate(37, reinterpret_cast<uint32_t>(Request5), 0x08, 0x8E);
+    SetGate(38, reinterpret_cast<uint32_t>(Request6), 0x08, 0x8E);
+    SetGate(39, reinterpret_cast<uint32_t>(Request7), 0x08, 0x8E);
+    SetGate(40, reinterpret_cast<uint32_t>(Request8), 0x08, 0x8E);
+    SetGate(41, reinterpret_cast<uint32_t>(Request9), 0x08, 0x8E);
+    SetGate(42, reinterpret_cast<uint32_t>(Request10), 0x08, 0x8E);
+    SetGate(43, reinterpret_cast<uint32_t>(Request11), 0x08, 0x8E);
+    SetGate(44, reinterpret_cast<uint32_t>(Request12), 0x08, 0x8E);
+    SetGate(45, reinterpret_cast<uint32_t>(Request13), 0x08, 0x8E);
+    SetGate(46, reinterpret_cast<uint32_t>(Request14), 0x08, 0x8E);
+    SetGate(47, reinterpret_cast<uint32_t>(Request15), 0x08, 0x8E);
 
     GoToSetIdtr();
 
@@ -189,6 +189,10 @@ Interrupt::RegisterHandler(uint8_t vector_num, InterruptHandler new_handler) {
 extern "C" void
 HandleException(SavedMessage* message) {
     int vector_num = message->vector_num;
+    if (vector_num == 14) {
+        ;
+        // return;
+    }
     if (handler_[vector_num]) {
         handler_[vector_num](message);
     } else {
