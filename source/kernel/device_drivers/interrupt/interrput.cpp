@@ -189,6 +189,10 @@ Interrupt::RegisterHandler(uint8_t vector_num, InterruptHandler new_handler) {
 extern "C" void
 HandleException(SavedMessage* message) {
     int vector_num = message->vector_num;
+    if (vector_num == 14) {
+        ;
+        // return;
+    }
     if (handler_[vector_num]) {
         handler_[vector_num](message);
     } else {
