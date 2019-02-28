@@ -15,8 +15,7 @@ ProtectedMode::Initialize(void) {
     }
 
     gdtr_.limit = sizeof(SegmentDescriptor) * kSegmentDescriptorTotal - 1;
-    gdtr_.base_address = (uint32_t)&gdt_;
-
+    gdtr_.base_address = reinterpret_cast<uint32_t>(&gdt_);
     SetSegmentDescriptor(0, 0, 0, 0, 0);
 
     // kernel code segment
