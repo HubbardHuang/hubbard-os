@@ -5,8 +5,8 @@ namespace hubbardos {
 namespace kernel {
 
 extern "C" {
-extern uint8_t start_address[];
-extern uint8_t end_address[];
+extern uint32_t start_address[];
+extern uint32_t end_address[];
 }
 
 uint32_t PhysialMemory::kernel_start_address_;
@@ -22,12 +22,13 @@ PhysialMemory::Initialize(void) {
         return;
     }
 
-    kernel_start_address_ = (uint32_t)start_address;
-    kernel_end_address_ = (uint32_t)end_address;
+    kernel_start_address_ = reinterpret_cast<uint32_t>(start_address);
+    kernel_end_address_ = reinterpret_cast<uint32_t>(end_address);
 
-    mmap_entry_t* map_start_address = (mmap_entry_t*)multiboot->mmap_addr;
+    mmap_entry_t* map_start_address =
+      reinterpret_cast<mmap_entry_t*>(multiboot->mmap_addr);
     mmap_entry_t* map_end_address =
-      (mmap_entry_t*)multiboot->mmap_addr + multiboot->mmap_length;
+      reinterpret_cast<mmap_entry_t*>(multiboot->mmap_addr + multiboot->mmap_length);
 
     for (mmap_entry_t* map_entry = map_start_address; map_entry < map_end_address;
          map_entry++) {
@@ -62,8 +63,8 @@ PhysialMemory::ShowMap(void) {
     uint32_t map_entry = multiboot->mmap_addr;
     uint32_t map_length = multiboot->mmap_length;
 
-    for (mmap_entry_t* mmap = (mmap_entry_t*)map_entry;
-         (uint32_t)mmap < map_entry + map_length; mmap++) {
+    for (mmap_entry_t* mmap = reinterpret_cast<mmap_entry_t*>(map_entry);
+         reinterpret_cast<uint32_t>(mmap) < map_entry + map_length; mmap++) {
         Console::SubInstance().PrintFormatted(
           "base address: 0x%x%x, length = 0x%x%x, type = %d.\n", mmap->base_addr_high,
           mmap->base_addr_low, mmap->length_high, mmap->length_low, mmap->type);

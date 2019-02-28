@@ -4,8 +4,6 @@
 namespace hubbardos {
 namespace interface {
 
-// using namespace hubbardos::interface;
-
 static const size_t kBufferLength = 1024;
 static const size_t kParsedLength = 20;
 static const char formated_type_flag[] = { 'd', 'u', 'c', 's', 'p',
@@ -41,9 +39,6 @@ typedef struct FormatedResult {
 static void
 ParseFormatedCommand(va_list& arg_list, char target[], size_t target_length,
                      FormatedResult& formated_result) {
-    // spilit the target[] into 3 parts: digit before point, digit after point,
-    // word after digit
-
     if (!Compare(target, "d") || !Compare(target, "i") || !Compare(target, "ld")) {
         formated_result.type = kSignedInt32;
     } else if (!Compare(target, "u") || !Compare(target, "lu")) {
@@ -199,14 +194,12 @@ FormatMessage(char* buffer, size_t buffer_length, const char* message,
                 }
                 ParseFormatedCommand(arg_list, parsed, parsed_count, formated_result);
                 CatchArgument(arg_list, formated_result, buffer_iterator);
-                // SetMember(parsed, parsed_count, '\0');
                 break;
             default:
                 *buffer_iterator++ = message[i];
                 break;
         }
     }
-    // SetMember(buffer, buffer_length, '\0');
     return (buffer_iterator - buffer);
 }
 

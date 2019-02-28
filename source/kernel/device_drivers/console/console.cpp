@@ -14,7 +14,7 @@ bool Console::title_drawn = false;
 
 static const uint8_t kDefaultTableLength = 4;
 static uint16_t* const kVramMappingMemory =
-  (uint16_t*)(0xB8000 + VirtualMemory::kOffset_);
+  reinterpret_cast<uint16_t*>(0xB8000 + VirtualMemory::kOffset_);
 static const size_t kBufferLength = 1024;
 
 static inline uint16_t

@@ -13,14 +13,16 @@ using namespace hubbardos::interface;
 namespace hubbardos {
 namespace kernel {
 
-char kernel_stack[8192];
+char kernel_stack[PhysialMemory::kThreadStackSize_];
 int HubbardOsKernel(void);
 
 extern "C" {
 __attribute__((section(".init.text"))) void
 PrepareForHubbardOsKernel(void) {
     VirtualMemory::InitializeFirstStep();
-    uint32_t kernel_stack_top = ((uint32_t)kernel_stack + 8192) & 0xFFFFFFF0;
+    uint32_t kernel_stack_top =
+      (reinterpret_cast<uint32_t>(kernel_stack) + PhysialMemory::kThreadStackSize_) &
+      0xFFFFFFF0;
     asm volatile("mov %0, %%esp\n\t"
                  "xor %%ebp, %%ebp"
                  :
@@ -50,6 +52,8 @@ HubbardOsKernel(void) {
     Console::SubInstance().PrintFormatted("page = 0x%x\n", page);
     Timer::Instance().StartWorking();
     Interrupt::Close();
+    uint32_t p = reinterpret_cast<uint32_t>(VirtualMemory::GetMapping(&p));
+    Console::SubInstance().PrintFormatted("&p = 0x%x.\n", p);
 
     while (1) {
         asm volatile("hlt");
