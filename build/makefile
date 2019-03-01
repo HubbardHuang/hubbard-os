@@ -12,6 +12,7 @@ ADDITIONAL_INCLUDE =								\
 	-I ../source/kernel/device_drivers/memory 		\
 	-I ../source/kernel/device_drivers/timer		\
 	-I ../source/kernel/device_drivers				\
+	-I ../source/kernel/thread						\
 	-I ../test/console_test
 CC = gcc
 LD = ld

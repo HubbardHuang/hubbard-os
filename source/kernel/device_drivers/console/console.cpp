@@ -63,7 +63,7 @@ Console::Instance(void) {
 
 Console&
 Console::SubInstance(void) {
-    static Console sub_singleton(Location(5, 5), Location(kXMax_ - 5, kYMax_));
+    static Console sub_singleton(Location(5, 5), Location(kXMax_ - 5, kYMax_ - 5));
     return sub_singleton;
 }
 

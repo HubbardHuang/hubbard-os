@@ -6,7 +6,9 @@
 namespace hubbardos {
 namespace kernel {
 
-enum { kInterruptVectorTotal = 256 };
+// enum { kInterruptVectorTotal = 256 };
+
+// enum InterruptVectorNumber { kTimer = 32, kPageFault = 14 };
 
 typedef struct SavedMessage {
     uint32_t ds;
@@ -42,14 +44,15 @@ typedef struct IDTR {
 private:
 } __attribute__((packed)) IDTR;
 
-typedef void (*InterruptHandler)(SavedMessage*);
-
-enum InterruptVectorNumber { kTimer = 32 };
+// typedef void (*InterruptHandler)(SavedMessage*);
 
 class Interrupt {
 public:
+    enum Vector { kPageFault = 14, kTimer = 32 };
+    static const int kVectorTotal = 256;
+    using handler_t = void (*)(SavedMessage*);
     static void Initialize(void);
-    static void RegisterHandler(uint8_t vector_num, InterruptHandler new_handler);
+    static void RegisterHandler(uint8_t vector_num, handler_t new_handler);
     static void Open(void);
     static void Close(void);
 
@@ -58,7 +61,7 @@ private:
     static void SetGate(uint8_t vector_num, uint32_t entry, uint16_t selector,
                         uint8_t other);
     static void GoToSetIdtr(void);
-    static IdtGate gate_[kInterruptVectorTotal];
+    static IdtGate gate_[kVectorTotal];
     static IDTR idtr_;
     static bool initialized;
 };
