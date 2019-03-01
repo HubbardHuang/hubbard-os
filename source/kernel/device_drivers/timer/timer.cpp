@@ -45,7 +45,7 @@ Timer::StartWorking(void) {
     if (is_working == true) {
         return;
     }
-    Interrupt::RegisterHandler(InterruptVectorNumber::kTimer, TimerInterrupt);
+    Interrupt::RegisterHandler(Interrupt::Vector::kTimer, TimerInterrupt);
     Interrupt::Open();
     is_working = true;
 }

@@ -8,6 +8,8 @@ namespace kernel {
 
 enum { kInterruptVectorTotal = 256 };
 
+// enum InterruptVectorNumber { kTimer = 32, kPageFault = 14 };
+
 typedef struct SavedMessage {
     uint32_t ds;
     uint32_t edi;
@@ -44,10 +46,10 @@ private:
 
 typedef void (*InterruptHandler)(SavedMessage*);
 
-enum InterruptVectorNumber { kTimer = 32 };
-
 class Interrupt {
 public:
+    enum Vector { kPageFault = 14, kTimer = 32 };
+
     static void Initialize(void);
     static void RegisterHandler(uint8_t vector_num, InterruptHandler new_handler);
     static void Open(void);
