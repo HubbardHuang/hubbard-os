@@ -39,6 +39,9 @@ UpdateTlb(uint32_t virtual_address) {
 void
 PageFault(SavedMessage* message) {
     Console::SubInstance().PrintFormatted("page fault!\n");
+    while (1) {
+        ;
+    }
 }
 
 void
@@ -81,7 +84,7 @@ VirtualMemory::InitializeSecondStep(void) {
         pte[i] = (i << 12) | kPagePresent_ | kPageWrite_;
     }
 
-    // Interrupt::RegisterHandler(14, &PageFault);
+    Interrupt::RegisterHandler(Interrupt::Vector::kPageFault, &PageFault);
     uint32_t kpd_physical_address =
       reinterpret_cast<uint32_t>(kernel_page_directory_) - kOffset_;
     SwitchPageDirectory(kpd_physical_address);

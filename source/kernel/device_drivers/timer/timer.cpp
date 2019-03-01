@@ -2,6 +2,7 @@
 #include "console.h"
 #include "interrupt.h"
 #include "io_port.h"
+#include "thread.h"
 
 namespace hubbardos {
 namespace kernel {
@@ -11,8 +12,9 @@ TimerInterrupt(SavedMessage* message) {
     Timer::Instance().ClickAddOne();
     uint32_t click = Timer::Instance().GetClick();
 
-    Console::SubInstance().PrintFormatted("Timer: %d.\n", click);
-    if (click == 50) {
+    // Console::SubInstance().PrintFormatted("Timer: %d.\n", click);
+    if (click == 1) {
+        Thread::Schedule();
         Timer::Instance().SetClick(0);
     }
 }
@@ -45,7 +47,7 @@ Timer::StartWorking(void) {
     if (is_working == true) {
         return;
     }
-    Interrupt::RegisterHandler(InterruptVectorNumber::kTimer, TimerInterrupt);
+    Interrupt::RegisterHandler(Interrupt::Vector::kTimer, TimerInterrupt);
     Interrupt::Open();
     is_working = true;
 }

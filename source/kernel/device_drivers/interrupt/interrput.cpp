@@ -67,11 +67,11 @@ void Request15(void);
 };
 #endif
 
-IdtGate Interrupt::gate_[kInterruptVectorTotal];
+IdtGate Interrupt::gate_[Interrupt::kVectorTotal];
 IDTR Interrupt::idtr_;
 bool Interrupt::initialized = false;
 
-static InterruptHandler handler_[kInterruptVectorTotal];
+static Interrupt::handler_t handler_[Interrupt::kVectorTotal];
 
 void
 Interrupt::InitializeChip8259A(void) {
@@ -122,8 +122,8 @@ Interrupt::Initialize(void) {
 
     InitializeChip8259A();
 
-    SetMember(handler_, sizeof(InterruptHandler) * kInterruptVectorTotal, 0);
-    idtr_.limit = sizeof(IdtGate) * kInterruptVectorTotal - 1;
+    SetMember(handler_, sizeof(handler_t) * kVectorTotal, 0);
+    idtr_.limit = sizeof(IdtGate) * kVectorTotal - 1;
     idtr_.base = reinterpret_cast<uint32_t>(&gate_);
 
     SetGate(0, reinterpret_cast<uint32_t>(Exception0), 0x08, 0x8E);
@@ -182,17 +182,17 @@ Interrupt::Initialize(void) {
 }
 
 void
-Interrupt::RegisterHandler(uint8_t vector_num, InterruptHandler new_handler) {
+Interrupt::RegisterHandler(uint8_t vector_num, handler_t new_handler) {
     handler_[vector_num] = new_handler;
 }
 
 extern "C" void
 HandleException(SavedMessage* message) {
     int vector_num = message->vector_num;
-    if (vector_num == 14) {
-        ;
-        // return;
-    }
+    // if (vector_num == 14) {
+    //     ;
+    //     // return;
+    // }
     if (handler_[vector_num]) {
         handler_[vector_num](message);
     } else {
